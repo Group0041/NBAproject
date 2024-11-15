@@ -1,21 +1,19 @@
-Final_data <- read_csv("NBA_final_data_salaries_2023_2024.csv")
-
+final_data <- read_csv("NBA_final_data_salaries_2023_2024.csv")
+install.packages("randomForest")
 library(randomForest)
-library(caret) 
-library(ggplot2)
-library(dplyr)
 
-colSums(is.na(Final_data)) 
 
-Final_data <- Final_data %>%
+colSums(is.na(final_data)) 
+
+final_data <- final_data %>%
   select(-'FG_Percentage', -'3P_Percentage', -'FT_Percentage')
 colnames(Final_data)[c(12, 13)] <- c("Three_P", "Three_PA")
 
 set.seed(123)
 
 trainIndex <- createDataPartition(Final_data$salary, p = 0.8, list = FALSE)
-trainData <- Final_data[trainIndex, ]
-testData <- Final_data[-trainIndex, ]
+trainData <- final_data[trainIndex, ]
+testData <- final_data[-trainIndex, ]
 
 
 rf_model <- randomForest(salary ~ ., data = trainData, 
