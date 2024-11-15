@@ -1,44 +1,83 @@
-Histogram med lønnsfordeling
+install.packages("ggcorrplot")
+install.packages( "ggExtra")
+library(ggExtra)
+library(ggcorrplot)
+library(dplyr)
+library(ggplot2)
+library(reshape2)
+library(plotly)
+
 final_data$Age <- as.numeric(final_data$Age)
 final_data$salary <- as.numeric(final_data$salary)
 
 
-salary_histogram <- ggplot(final_data, aes(x = salary)) +
-  geom_histogram(binwidth = 1000000, color = "white", fill = "#69b3a2", linewidth = 0.2) + 
-  labs(title = "Distribution of NBA Player Salaries", x = "Salary", y = "Number of Players") + 
-  scale_x_continuous(labels = scales::dollar_format(prefix = "$"), breaks = seq(0, max(final_data$salary), by = 1e7)) + 
+# Scatter plot with linear regression line
+ggplot(final_data, aes(x = PPG, y = salary)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(method = "lm", formula = y ~ x, color = "blue", se = TRUE) +
+  labs(
+    title = "Points per Game vs. Salary",
+    x = "Points per Game (PPG)",
+    y = "Salary ($)"
+  ) +
+  scale_y_continuous(labels = scales::dollar_format()) +
+  theme_grey() +
   theme(plot.title = element_text(hjust = 0.5))
 
-salary_histogram
+# Scatter plot with smooth trend line (LOESS) to show age vs. salary relationship
+ggplot(final_data, aes(x = Age, y = salary)) +
+  geom_point(alpha = 0.5, color = "darkgray") +  # Scatter plot of individual points with transparency
+  geom_smooth(method = "loess", color = "green", fill = "gray", se = TRUE) +
+  labs(
+    title = "Age vs. Salary",
+    x = "Age",
+    y = "Salary ($)"
+  ) +
+  scale_y_continuous(labels = scales::dollar_format()) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
 
-Alder vs. lønnsfordeling
+# Select numeric variables for correlation analysis
+numeric_data <- final_data %>%
+  select(salary, MPG, PPG, APG, RPG, TOPG, BPG, SPG, `3P`, FT, Age) %>%
+  mutate(across(everything(), as.numeric))
 
+# Compute correlation matrix
+cor_matrix <- cor(numeric_data, use = "complete.obs")
 
-age_vs_salary <- ggplot(final_data, aes(x = Age, y = salary)) +
-  geom_point(alpha = 0.7) +
-  geom_smooth(formula = y ~ x, method = "loess", color = "#69b3a2") +
-  labs(title = "Age vs Salary") +
-  scale_y_continuous(labels = scales::dollar_format(prefix = "$"), limits = c(0, max(final_data$salary, na.rm = TRUE))) +
-  theme(plot.title = element_text(hjust = 0.5, size = 16))
+# Melt correlation matrix for ggplot
+cor_melt <- melt(cor_matrix)
 
-age_vs_salary <- ggMarginal(age_vs_salary, type = "boxplot", size = 3)
+# Heatmap of correlations
+ggplot(cor_melt, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0) +
+  labs(
+    title = "Correlation Plot: Player Statistics vs. Salary",
+    x = "",
+    y = "",
+    fill = "Correlation"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.title = element_text(hjust = 0.5)
+  )
 
-Korrelasjonsplot
+# Remove the lowest 100 earners
+filtered_data <- final_data %>%
+  arrange(salary) %>%
+  slice(-(1:100))  # Exclude the first 100 rows
 
-install.packages("ggcorrplot")
-
-library(ggcorrplot)
-library(dplyr)
-
-correlation_data <- final_data %>%
-  select(salary, MPG, PPG, APG, RPG, TOPG, BPG, SPG, FG_Percentage, `3P_Percentage`, FT_Percentage, Age) %>%
-  mutate(across(everything(), as.numeric))  
-
-correlation_matrix <- cor(correlation_data, use = "complete.obs")
-
-ggcorrplot(correlation_matrix, 
-           method = "circle", 
-           type = "lower", 
-           lab = TRUE, 
-           title = "Correlation Plot: Salary vs. Aggregate Stats", 
-           colors = c("blue", "white", "red"))
+# Boxplot for the filtered data
+ggplot(filtered_data, aes(x = Pos, y = salary)) +
+  geom_boxplot(outlier.shape = NA, fill = "skyblue", alpha = 0.7, width = 0.6) +
+  geom_jitter(width = 0.15, alpha = 0.4, color = "darkgray", size = 0.5) +
+  labs(
+    title = "Salary Distribution by Position (Excluding Lowest 100 Earners)",
+    x = "Position",
+    y = "Salary ($)"
+  ) +
+  scale_y_continuous(labels = scales::dollar_format()) +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
