@@ -11,7 +11,7 @@ colnames(Final_data)[c(12, 13)] <- c("Three_P", "Three_PA")
 
 set.seed(123)
 
-trainIndex <- createDataPartition(Final_data$salary, p = 0.8, list = FALSE)
+trainIndex <- createDataPartition(final_data$salary, p = 0.8, list = FALSE)
 trainData <- final_data[trainIndex, ]
 testData <- final_data[-trainIndex, ]
 
