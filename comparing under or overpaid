@@ -1,0 +1,46 @@
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+# Define the number of top players to compare (e.g., top 10)
+top_n <- 10
+
+# Select the top N overpaid and underpaid players based on salary_difference
+top_overpaid <- final_data %>%
+  arrange(desc(salary_difference)) %>%
+  head(top_n)
+
+top_underpaid <- final_data %>%
+  arrange(salary_difference) %>%
+  head(top_n)
+
+# Combine top overpaid and underpaid players, add a category column
+comparison_data <- bind_rows(
+  top_overpaid %>% mutate(category = "Top Overpaid"),
+  top_underpaid %>% mutate(category = "Top Underpaid")
+)
+
+# Select only the relevant variables (excluding salary-related and percentage stats) and convert Age to numeric
+comparison_data <- comparison_data %>%
+  select(category, G, MP, PTS, AST, TRB, TOV, BLK, STL, FG, FGA, `3P`, `3PA`, FT, FTA, MPG, PPG, APG, RPG, TOPG, BPG, SPG, Age) %>%
+  mutate(Age = as.numeric(Age))  # Convert Age to numeric if it's in character format
+
+# Reshape the data to long format for easier plotting
+comparison_long <- comparison_data %>%
+  pivot_longer(
+    cols = -category,
+    names_to = "stat",
+    values_to = "value"
+  )
+
+# Plot the stats for top overpaid vs. top underpaid players
+ggplot(comparison_long, aes(x = stat, y = value, fill = category)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(
+    title = "Comparison of Stats for Top Overpaid vs. Top Underpaid Players",
+    x = "Stat",
+    y = "Average Value"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c("Top Overpaid" = "red", "Top Underpaid" = "blue"))
