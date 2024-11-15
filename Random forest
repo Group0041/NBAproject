@@ -16,7 +16,7 @@ final_data <- final_data %>%
   select(Player, PTS, Age, MP, `3P`, STL, TRB, salary, AST) %>%
   rename(Three_P = `3P`) 
 
----------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------
 
 # Creating the random forest model
 
@@ -37,7 +37,7 @@ rf_model <- randomForest(salary ~ . - Player, data = trainData,
 
 # View model summary
 print(rf_model)
---------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------
 
 # Visulizing variable importance for salary (Mean Decrease in MSE)
 
@@ -75,7 +75,7 @@ ggplot(importance_data, aes(x = reorder(Variable, IncMSE), y = IncMSE)) +
 
 # Feature importance graph
 
- Plot variable importance using varImpPlot
+ #Plot variable importance using varImpPlot
 varImpPlot(rf_model, main = "Variable Importance in Predicting Salary") #Simple and easy
 
 
@@ -91,9 +91,9 @@ barplot(sorted_importance,
         main = "Feature Importance (IncNodePurity)",
         ylab = "Increase in Node Purity")
 
----------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------
 
---------------------------# Visulizing prediction vs. Actual salary-----------------------------------------------------
+#--------------------------# Visulizing prediction vs. Actual salary-----------------------------------------------------
 
 install.packages("scales")
 library(scales)
