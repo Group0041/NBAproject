@@ -32,16 +32,16 @@ name_mapping <- data.frame(
 salary_table <- salary_table %>%
   filter(Player != "" & Player != "Player")
 
-salary_table$season23_24 <- gsub(",", "", salary_table$season23_24)
-salary_table$season23_24 <- gsub("\\$", "", salary_table$season23_24)
-salary_table$season23_24 <- as.numeric(salary_table$season23_24)
+salary_table$salary <- gsub(",", "", salary_table$salary)
+salary_table$salary <- gsub("\\$", "", salary_table$salary)
+salary_table$salary <- as.numeric(salary_table$salary)
 
-write.csv(salary_table, "NBA_season23_24_salary.csv", row.names = FALSE)
+write.csv(salary_table, "NBA_salary_salary.csv", row.names = FALSE)
 
 head(salary_table)
 
 filter(Player != "" & Player != "Player")
 
-salary_table$season23_24 <- gsub(",", "", salary_table$season23_24)
-salary_table$season23_24 <- gsub("\\$", "", salary_table$season23_24)
-salary_table$season23_24 <- as.numeric(salary_table$season23_24)
+salary_table$salary <- gsub(",", "", salary_table$salary)
+salary_table$salary <- gsub("\\$", "", salary_table$salary)
+salary_table$salary <- as.numeric(salary_table$salary)
