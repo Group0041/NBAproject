@@ -2,7 +2,7 @@
 
  # Include Player in the single_player data
 
-  single_player <- Final_data %>%
+  single_player <- final_data %>%
     filter(Player == "Terance Mann") %>%
     select(Player, PTS, Age, MP, Three_P, STL, TRB, AST)  # Include Player
   
