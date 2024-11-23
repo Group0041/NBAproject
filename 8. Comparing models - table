@@ -1,4 +1,3 @@
-# Install necessary packages
 install.packages("knitr")
 install.packages("kableExtra")
 install.packages("htmltools")
@@ -16,13 +15,13 @@ testData$Difference <- abs(testData$Predicted_Salary_Ridge - testData$Predicted_
 final_comparison_table <- testData %>%
   select(Player, salary, Predicted_Salary_Ridge, Predicted_Salary_RF, Difference)
 
-# Remove decimals and sort by Difference (descending)
+# Remove decimals and sort by Difference
 final_comparison_table <- final_comparison_table %>%
   mutate(across(where(is.numeric), ~ round(., 0))) %>% # Round numeric columns
   arrange(desc(Difference)) %>% # Sort by largest difference
   head(10) # Select top 10 players with the largest differences
 
-# Render a styled HTML table for the Viewer pane
+# Render a HTML table
 formatted_table <- final_comparison_table %>%
   kable("html", align = "c", col.names = c("Player Name", "Salary", 
                                            "Predicted Salary (Ridge)", 
@@ -31,6 +30,6 @@ formatted_table <- final_comparison_table %>%
                 full_width = F, position = "center") %>%
   column_spec(2:5, width = "20em") # Adjust column width for better visuals
 
-# Display the table in the Viewer pane
+# Display the table
 browsable(HTML(formatted_table))
 
