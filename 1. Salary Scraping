@@ -40,7 +40,6 @@ write.csv(salary_table, "NBA_salary_salary.csv", row.names = FALSE)
 
 head(salary_table)
 
-filter(Player != "" & Player != "Player")
 
 salary_table$salary <- gsub(",", "", salary_table$salary)
 salary_table$salary <- gsub("\\$", "", salary_table$salary)
