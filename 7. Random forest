@@ -38,14 +38,7 @@ rf_model <- randomForest(salary ~ . - Player, data = trainData,
 print(rf_model)
 #--------------------------------------------------------------------------------------------------------------------------
 
-# Visulizing variable importance for salary (Mean Decrease in MSE) and printing R-squared
-
-SS_res <- sum((actual_salaries - predicted_salaries)^2)
-SS_tot <- sum((actual_salaries - mean(actual_salaries))^2) 
-
-r_squared_rf <- 1 - (SS_res / SS_tot) 
-
-cat("R-squared (Random Forest):", r_squared_rf, "\n")
+# Visulizing variable importance for salary (Mean Decrease in MSE) 
 
 predicted_salaries <- predict(rf_model, testData)
 
