@@ -5,8 +5,7 @@ library(ggplot2)
 library(dplyr)
 
 
-final_data <-  read_csv("NBA_final_data_salaries_2023_2024.csv")
-View(final_data)
+final_data <-  read_csv("final_data.csv")
 
 colSums(is.na(final_data)) # checking missing values
 
