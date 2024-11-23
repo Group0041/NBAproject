@@ -3,9 +3,6 @@ player_stats <- read.csv("~/Documents/DataScience/NBA project/database_csv.csv")
 player_stats <- player_stats %>%
   select(-GmSc, -Tm, -Opp, -Res, -Data)
 
-player_stats <- player_stats %>%
-  rename(`3P` = X3P, `3PA` = X3PA)
-
 player_stats_aggregated <- player_stats %>%
   group_by(Player) %>%
   summarise(
