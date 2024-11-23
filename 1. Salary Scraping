@@ -30,9 +30,6 @@ name_mapping <- data.frame(
   "Nate Williams", "Josh Primo", "KJ Martin", "Mo Bamba", "Santiago Aldama", "Scottie Pippen", "Sviatoslav Mykhailiuk")
 )
 
-salary_table <- salary_table %>%
-  filter(Player != "" & Player != "Player")
-
 salary_table$salary <- gsub(",", "", salary_table$salary)
 salary_table$salary <- gsub("\\$", "", salary_table$salary)
 salary_table$salary <- as.numeric(salary_table$salary)
