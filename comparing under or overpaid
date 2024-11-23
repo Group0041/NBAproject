@@ -1,46 +1,36 @@
-library(dplyr)
-library(ggplot2)
-library(tidyr)
+# Install necessary packages
+install.packages("knitr")
+install.packages("kableExtra")
+install.packages("htmltools")
 
-# Define the number of top players to compare (e.g., top 10)
-top_n <- 10
+library(knitr)
+library(kableExtra)
+library(htmltools)
 
-# Select the top N overpaid and underpaid players based on salary_difference
-top_overpaid <- final_data %>%
-  arrange(desc(salary_difference)) %>%
-  head(top_n)
+# Prepare the comparison table
+testData$Predicted_Salary_Ridge <- as.vector(predictions_ridge)
+testData$Predicted_Salary_RF <- predicted_salaries
+testData$Difference <- abs(testData$Predicted_Salary_Ridge - testData$Predicted_Salary_RF)
 
-top_underpaid <- final_data %>%
-  arrange(salary_difference) %>%
-  head(top_n)
+# Select only relevant columns
+final_comparison_table <- testData %>%
+  select(Player, salary, Predicted_Salary_Ridge, Predicted_Salary_RF, Difference)
 
-# Combine top overpaid and underpaid players, add a category column
-comparison_data <- bind_rows(
-  top_overpaid %>% mutate(category = "Top Overpaid"),
-  top_underpaid %>% mutate(category = "Top Underpaid")
-)
+# Remove decimals and sort by Difference (descending)
+final_comparison_table <- final_comparison_table %>%
+  mutate(across(where(is.numeric), ~ round(., 0))) %>% # Round numeric columns
+  arrange(desc(Difference)) %>% # Sort by largest difference
+  head(10) # Select top 10 players with the largest differences
 
-# Select only the relevant variables (excluding salary-related and percentage stats) and convert Age to numeric
-comparison_data <- comparison_data %>%
-  select(category, G, MP, PTS, AST, TRB, TOV, BLK, STL, FG, FGA, `3P`, `3PA`, FT, FTA, MPG, PPG, APG, RPG, TOPG, BPG, SPG, Age) %>%
-  mutate(Age = as.numeric(Age))  # Convert Age to numeric if it's in character format
+# Render a styled HTML table for the Viewer pane
+formatted_table <- final_comparison_table %>%
+  kable("html", align = "c", col.names = c("Player Name", "Salary", 
+                                           "Predicted Salary (Ridge)", 
+                                           "Predicted Salary (RF)", "Difference")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = F, position = "center") %>%
+  column_spec(2:5, width = "20em") # Adjust column width for better visuals
 
-# Reshape the data to long format for easier plotting
-comparison_long <- comparison_data %>%
-  pivot_longer(
-    cols = -category,
-    names_to = "stat",
-    values_to = "value"
-  )
+# Display the table in the Viewer pane
+browsable(HTML(formatted_table))
 
-# Plot the stats for top overpaid vs. top underpaid players
-ggplot(comparison_long, aes(x = stat, y = value, fill = category)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(
-    title = "Comparison of Stats for Top Overpaid vs. Top Underpaid Players",
-    x = "Stat",
-    y = "Average Value"
-  ) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_manual(values = c("Top Overpaid" = "red", "Top Underpaid" = "blue"))
