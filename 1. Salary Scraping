@@ -6,7 +6,8 @@ library(rvest)
 library(dplyr)
 library(magrittr)
 library(stringr)
-library(stringi) 
+library(stringi)
+library(readr)
 
 url <- "https://hoopshype.com/salaries/players/2023-2024/"
 page <- read_html(url)
