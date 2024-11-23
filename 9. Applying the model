@@ -7,8 +7,8 @@
     select(Player, PTS, Age, MP, Three_P, STL, TRB, AST)  # Include Player
   
   # Predict salary using rf_model
-  predicted_salary <- predict(rf_model, newdata = single_player)
+  predicted_salary_single <- predict(rf_model, newdata = single_player)
   
   # Print the predicted salary
-  cat("Predicted Salary for Terance Mann:", predicted_salary, "\n")
+  cat("Predicted Salary for Terance Mann:", predicted_salary_single, "\n")
 
