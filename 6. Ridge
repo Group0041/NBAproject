@@ -6,6 +6,9 @@ library(glmnet)
 install.packages("scales")
 library(scales)
 
+final_data <- final_data %>%
+  select(Player, PTS, Age, MP, `3P`, STL, TRB, salary, AST) %>%
+  rename(Three_P = `3P`) 
 
 final_data[, c("PTS", "G", "AST", "TRB", "Three_P", "STL", "Age")] <- lapply(final_data[, c("PTS", "MP", "AST", "TRB", "Three_P", "STL", "Age")], as.numeric)
 
