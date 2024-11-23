@@ -1,4 +1,4 @@
-player_stats <- read.csv("/Users/jonlund/Documents/DataScience/NBA project/database_csv.csv")
+player_stats <- read.csv("~/Documents/DataScience/NBA project/database_csv.csv")
 
 player_stats <- player_stats %>%
   select(-GmSc, -Tm, -Opp, -Res, -Data)
