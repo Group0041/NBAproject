@@ -1,7 +1,3 @@
-# Rename season23_24 to salary in salary_table
-salary_table <- salary_table %>%
-  rename(salary = season23_24)
-
 salary_table <- salary_table %>%
   left_join(name_mapping, by = c("Player" = "salary_name")) %>%
   mutate(Player = ifelse(is.na(stats_name), Player, stats_name)) %>%
